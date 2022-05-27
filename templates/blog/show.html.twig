@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<article>
+		<h2>
+			{{ article.title }}</h2>
+		<div class="metadata">Écrit le
+			{{ article.createdAt | date('d/m/y')}}
+			{{ article.createdAt | date('H:i')}}
+			à  dans la categorie
+			{{ article.category.title }}</div>
+		<div class="content">
+			<img src="https://place-hold.it/350x150" alt="">
+			<div class="content">
+				{{ article.content | raw }}
+			</div>
+		</div>
+		{% if app.user %}
+			<a href="{{path('blog_edit' , {'id': article.id})}}" class="btn btn-primary">Modifier l'article</a>
+		{%  endif %}
+	</article>
+
+	<section id="commentaires" class="mt-5">
+
+		<h1>
+			{{article.comments | length}}
+			Commentaires
+		</h1>
+
+		{% for comment in article.comments | sort((a, b) => a.createdAt < b.createdAt) %}
+
+			<div class="comment mt-2">
+				<div class="row p-3">
+					<div class="col-3">
+						{{comment.author}}
+						le
+						{{comment.createdAt | date('d/m/Y à H:i')}}
+					</div>
+					<div class="col">
+						{{comment.content | raw}}
+					</div>
+				</div>
+				{% if app.user %}
+					{% if comment.author == app.user.username %}
+						<a href="{{path('delete_comment', {'id' : comment.id, 'idArticle': article.id})}}" class="btn btn-danger">
+							Supprimer le commentaire
+						</a>
+					{% endif %}
+				{% endif %}
+			</div>
+		{% endfor %}
+
+		{% if not app.user %}
+
+			<a href="{{path('security_login')}}" class="btn btn-outline-info">Veuillez vous connecter pour commenter</a>
+
+		{% else %}
+
+			{{ form_start(commentForm)}}
+
+			<div class="form-group mt-5">
+				{{form_row(commentForm.Content, {'label':'Votre commentaire :', 'attr':{'placeholder': 'Votre commentaire', 'class':'form-control mt-4'}})}}
+			</div>
+
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-success mt-4">Envoyer mon commentaire</button>
+			</div>
+
+			{{ form_end(commentForm)}}
+
+		{% endif %}
+	</section>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1> Création d'un article </h1>
+
+{{ form_start(formArticle) }}
+
+<div class="form-group">
+ 
+{% if form_errors(formArticle.title)%}
+ <ul class="list-group list-unstyled">
+ <li class="list-group-item list-group-item-danger">
+ {{form_errors(formArticle.title)}}
+ </li>
+ </ul>
+
+ {% endif %}
+ <div class="form-group">
+    <label for="">Titre</label>
+    {{ form_widget(formArticle.title) }}
+</div>
+
+<div class="form-group">
+    <label for="">Categorie</label>
+    {{ form_widget(formArticle.category) }}
+</div>
+
+<div class="form-group">
+    <label for="">Contenu</label>
+    {{ form_widget(formArticle.content) }}
+</div>
+
+<div class="form-group">
+    <label for="">Image</label>
+    {{ form_widget(formArticle.image) }}
+</div>
+
+<button class="btn btn-primary mt-4">
+    {% if EditMode %}
+        Enregistrer les modifications
+    {% else %}
+        Ajouter l'article
+    {% endif %}
+
+
+</button>
+
+{{ form_end(formArticle) }}
+
+
+
+
+{% endblock %}
